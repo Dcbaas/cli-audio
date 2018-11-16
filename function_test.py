@@ -32,7 +32,7 @@ print(list1)
 
 lib = Library()
 print(lib)
-lib.add_tracks('test_dir')
+lib.add_tracks('media')
 
 print(lib.list_tracks())
 
@@ -40,3 +40,5 @@ print(lib.list_tracks())
 player = Player()
 
 player.play('media/MoodyLoop.wav')
+
+player.stream

@@ -77,11 +77,14 @@ class Library:
     
     def get_next_track(self):
         """
-        Get the next track in the play queue.
+        Get the next track in the play queue if the queue isn't empty.
 
         returns: the name of the next track
         """
-        return self.queue.popleft()
+        if len(self.queue ) > 0:
+            return self.queue.popleft()
+        else:
+            return False
 
     def list_tracks(self):
         """
