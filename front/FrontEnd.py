@@ -3,11 +3,14 @@ import curses.textpad
 
 import sys
 
+from library.Library import Library
+
 class FrontEnd:
 
     def __init__(self, player):
         self.player = player
         self.player.play(sys.argv[1])
+        self.library = Library()
         curses.wrapper(self.menu)
 
     def menu(self, args):
@@ -16,7 +19,7 @@ class FrontEnd:
         self.stdscr.addstr(0,0, "cli-audio",curses.A_REVERSE)
         self.stdscr.addstr(5,10, "c - Change current song")
         self.stdscr.addstr(6,10, "p - Play/Pause")
-        self.stdscr.addstr(7,10, "l - Library")
+        self.stdscr.addstr(7,10, "q - Queue Songs")
         self.stdscr.addstr(9,10, "ESC - Quit")
         self.updateSong()
         self.stdscr.refresh()

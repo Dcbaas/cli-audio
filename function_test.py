@@ -1,5 +1,7 @@
 import os
 from collections import deque
+from library.Library import Library
+from player.Player import Player
 
 
 pathname = 'test_dir'
@@ -23,3 +25,18 @@ list2 = deque([4,5,6])
 list1.extend(list2)
 
 print(list1)
+
+
+
+# Library Test
+
+lib = Library()
+print(lib)
+lib.add_tracks('test_dir')
+
+print(lib.list_tracks())
+
+
+player = Player()
+
+player.play('media/MoodyLoop.wav')
