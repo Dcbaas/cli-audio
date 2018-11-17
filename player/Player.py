@@ -3,6 +3,7 @@
 import pyaudio
 import wave
 import time
+from exception import CLI_Exception
 
 class Player:
     """
@@ -50,22 +51,27 @@ class Player:
 
         param track: The audio file that will be played by this player.
         """
-        self.paused = False
-        self.currentSong = track
-        self.wf = wave.open(track, 'rb')
+        try:
+    
+            self.paused = False
+            self.currentSong = track
+            self.wf = wave.open(track, 'rb')
 
-        # instantiate PyAudio (1)
-        self.p = pyaudio.PyAudio()
+            # instantiate PyAudio (1)
+            self.p = pyaudio.PyAudio()
 
-        # open self.stream using callback (3)
-        self.stream = self.p.open(format=self.p.get_format_from_width(self.wf.getsampwidth()),
-                channels=self.wf.getnchannels(),
-                rate=self.wf.getframerate(),
-                output=True,
-                stream_callback=self.callback)
+            # open self.stream using callback (3)
+            self.stream = self.p.open(format=self.p.get_format_from_width(self.wf.getsampwidth()),
+                    channels=self.wf.getnchannels(),
+                    rate=self.wf.getframerate(),
+                    output=True,
+                    stream_callback=self.callback)
 
-        # start the self.stream (4)
-        self.stream.start_stream()
+            # start the self.stream (4)
+            self.stream.start_stream()
+        except Exception as err:
+            raise CLI_Exception.CLI_Audio_File_Exception
+            ('Error with file' + err)
 
     def stop(self):
         """
