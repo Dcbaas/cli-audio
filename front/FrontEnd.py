@@ -106,41 +106,45 @@ class FrontEnd:
         self.stdscr.refresh()
         self.player.stop()
         #self.player.play(path.decode(encoding = "utf-8"))
-        changeList = self.library.changeTrack(path.decode(encoding="utf-8"))
-        changeListLen = len(changeList)
-        
-        if changeListLen == 1:
-            self.player.play(path.decode(encoding = "utf-8"))
-        else:
-            listWin = curses.newwin(changeListLen + 1, 100, 5, 50)
-            #list the song options
-            for i in range(changeListLen):
-                listWin.addstr(i, 0, changeList[i])
-            
-            listWin.addstr(changeListLen, 0, "Select Song, j = DOWN, k = UP ")
-            i = 0
-            ch = None
-            while ch != ord('\n'):
-                listWin.addstr(i, 0, changeList[i], curses.A_REVERSE)
-                self.stdscr.refresh()
-                ch = listWin.getch()
-                if ch == ord('j') and i + 1 < changeListLen:
+        try: 
+            changeList = self.library.changeTrack(path.decode(encoding="utf-8"))
+            changeListLen = len(changeList)           
+            if changeListLen == 1:
+                self.player.play(path.decode(encoding = "utf-8"))
+            else:
+                listWin = curses.newwin(changeListLen + 1, 100, 5, 50)
+                #list the song options
+                for i in range(changeListLen):
                     listWin.addstr(i, 0, changeList[i])
-                    i = i + 1
-                elif ch == ord('k') and i - 1 >= 0:
-                    listWin.addstr(i, 0, changeList[i])
-                    i = i - 1
-            
-            #play the selected song
-            self.player.play(changeList[i])
+                
+                listWin.addstr(changeListLen, 0, "Select Song, j = DOWN, k = UP ")
+                i = 0
+                ch = None
+                while ch != ord('\n'):
+                    listWin.addstr(i, 0, changeList[i], curses.A_REVERSE)
+                    self.stdscr.refresh()
+                    ch = listWin.getch()
+                    if ch == ord('j') and i + 1 < changeListLen:
+                        listWin.addstr(i, 0, changeList[i])
+                        i = i + 1
+                    elif ch == ord('k') and i - 1 >= 0:
+                        listWin.addstr(i, 0, changeList[i])
+                        i = i - 1
+                
+                #play the selected song
+                self.player.play(changeList[i])
+        except CLI_Exception.CLI_Audio_File_Exception:
+            self.printError('The file or folder does not exist')
                     
 
 
     def nextSong(self):
-        next = self.library.get_next_track()
-        if next != False:
+        try:
+            next = self.library.get_next_track()
             self.player.stop()
             self.player.play(next)
+        except CLI_Exception.CLI_Audio_File_Exception:
+            self.printError('The queue is empty')
 
     def queueSong(self):
         queueWindow = curses.newwin(5, 40, 5, 50)
@@ -161,16 +165,19 @@ class FrontEnd:
 
     def listQueue(self):
         queue = self.library.list_tracks()
-        listWin = curses.newwin(len(queue), 40, 5, 50)
-        for i in range(len(queue)):
-            listWin.addstr(i, 0, queue[i])
-        self.stdscr.refresh()
-        curses.echo()
-        listWin.getch()
-        curses.noecho()
-        del listWin
-        self.stdscr.touchwin()
-        self.stdscr.refresh()
+        if len(queue) > 0:
+            listWin = curses.newwin(len(queue), 40, 5, 50)
+            for i in range(len(queue)):
+                listWin.addstr(i, 0, queue[i])
+            self.stdscr.refresh()
+            curses.echo()
+            listWin.getch()
+            curses.noecho()
+            del listWin
+            self.stdscr.touchwin()
+            self.stdscr.refresh()
+        else:
+            self.printError('Nothing to list')
         
     def printError(self, message):
         """
