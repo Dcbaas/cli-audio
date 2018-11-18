@@ -7,8 +7,8 @@ class Library:
     The Library class holds a list of all the songs to be played 
     by the player. It does this by keeping track of the names of 
     song files inside a list. There are three basic operations
-    1) Start a specfic individual song or directory list of songs.
-    This is accoplished by inputting the name of the song file or the 
+    1) Start a specific individual song or directory list of songs.
+    This is accomplished by inputting the name of the song file or the 
     name of a directory contianing song files. In either case the
     songs will be added to the queue list and will be played in the
     order they are added. 
@@ -17,7 +17,7 @@ class Library:
     All songs are stored in the queue list which determines which song
     is played next.
     """
-    #TODO Check that the file exetension is correct
+    #TODO Check that the file extension is correct
     #TODO Do better comments
 
     def __init__(self):
@@ -47,7 +47,7 @@ class Library:
         elif os.path.isdir(pathname):
             return [pathname + '/' + name for name in os.listdir(pathname)]
         else:
-            raise CLI_Exception.CLI_Audio_File_Exception
+           raise CLI_Exception.CLI_Audio_File_Exception
     
     def add_tracks(self, pathname):
         """
@@ -59,6 +59,9 @@ class Library:
         returns: a string indicating the song or songs have been added
         or not.
         """
+        #check to see if it is a relative path from Home directory
+        if pathname.startswith('~/'):
+            pathname.lstrip('~/')
         if os.path.isfile(pathname):
             self.queue.append(pathname)
             return 'Song added'
@@ -69,6 +72,7 @@ class Library:
         else:
             #throw an error
             raise CLI_Exception.CLI_Audio_File_Exception
+
             
     def get_next_track(self):
         """

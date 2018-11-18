@@ -10,7 +10,7 @@ from library.Library import Library
 class FrontEnd:
     """
     The FrontEnd Class handles the cli gui for the user to interact with.
-    It presents an interface thta shows the current song being played 
+    It presents an interface that shows the current song being played 
     while also presenting options for the user to take if they wish. 
     The gui runs through a curse wrapper until the user quits the program
 
@@ -22,17 +22,23 @@ class FrontEnd:
     def __init__(self, player):
         """
         Initializes the player and the library and creates the 
-        curse gui allwoing the menu function to take over.
+        curse gui allowing the menu function to take over.
         If the screen size of the terminal is too small for some reason,
         A exception for screen size will be thrown and the program will
         stop.
 
         param player: The player for this FrontEnd.
         """
-        self.player = player
-        self.player.play(sys.argv[1])
-        self.library = Library()
-        curses.wrapper(self.menu)
+        if len(sys.argv) != 2:
+            print("./cli-audio <song name>")
+            exit()
+        try: 
+            self.player = player
+            self.player.play(sys.argv[1])
+            self.library = Library()
+            curses.wrapper(self.menu)
+        except Exception:
+            print('Invalid File: Please specify a valid audio file')
         # try:
         #     curses.wrapper(self.menu)
         # except Exception:

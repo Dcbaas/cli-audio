@@ -7,11 +7,10 @@ from exception import CLI_Exception
 
 class Player:
     """
-    The Player class is the driver for playeing music in the cli. It
+    The Player class is the driver for playing music in the cli. It
     handles the playing pausing and stopping of music. This is done by
-    what appears to be steaming a file into an audio stream. It
-    does this asyncronussly?  I woudn't 
-    know. Someone forgot to comment this and I was stuck doing it. 
+    what appears to be steaming a file into an audio stream. It is done 
+    in the background in a different thread.
     """
     def __init__(self):
         """
@@ -33,7 +32,7 @@ class Player:
         """
         Toggles weather the player is paused or not. If it is paused, 
         then the stream is stopped and the song is paused at its current
-        posiiton.
+        position.
         """
         if self.paused == False:
             self.paused = True
@@ -44,7 +43,7 @@ class Player:
 
     def play(self, track):
         """
-        Takes the specified file and plays the audio file at the specifed
+        Takes the specified file and plays the audio file at the specified
         location. This is done by created a stream variable that sterams
         the contents of the file though pyaudio. There is also a callback
         function that is called to update where the stream is in the file.

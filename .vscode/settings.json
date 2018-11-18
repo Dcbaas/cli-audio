@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "deque",
+        "getch",
+        "getnchannels",
+        "initscr",
+        "isdir",
+        "isfile",
+        "noecho",
+        "pyaudio",
+        "stdscr"
+    ]
+}

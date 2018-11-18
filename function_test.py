@@ -26,19 +26,8 @@ list1.extend(list2)
 
 print(list1)
 
+name = '~/Documents/media'
 
+name = name.lstrip('~/')
 
-# Library Test
-
-lib = Library()
-print(lib)
-lib.add_tracks('media')
-
-print(lib.list_tracks())
-
-
-player = Player()
-
-player.play('media/MoodyLoop.wav')
-
-player.stream
+print(name)
