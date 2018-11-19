@@ -28,4 +28,5 @@ class CLI_Audio_Screen_Size_Exception(CLI_Audio_Exception):
     This exception is used to trigger error related to invalid screen 
     size at the start of the program. 
     """
-    pass
+    def __init__(self, message):
+        self.message = message

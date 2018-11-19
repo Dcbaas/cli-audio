@@ -14,6 +14,9 @@ class FrontEnd:
     while also presenting options for the user to take if they wish. 
     The gui runs through a curse wrapper until the user quits the program
 
+    Author: Ira Woodring, David Baas
+    Version: 1.0 - 11
+
     Attributes:
     player: The audio player for the cli
     library: The playlist queue for the cli
@@ -28,6 +31,8 @@ class FrontEnd:
         stop.
 
         param player: The player for this FrontEnd.
+        throws: CLI_Audio_Screen_Size_Exception if the screen size 
+        is too small
         """
         if len(sys.argv) != 2:
             print("./cli-audio <song name>")
@@ -38,19 +43,15 @@ class FrontEnd:
             self.library = Library()
             curses.wrapper(self.menu)
         except Exception:
-            print('Invalid File: Please specify a valid audio file')
-        # try:
-        #     curses.wrapper(self.menu)
-        # except Exception:
-        #     raise CLI_Exception.CLI_Audio_Screen_Size_Exception
-        #     ('Screen Size to Small')
+            raise CLI_Exception.CLI_Audio_Screen_Size_Exception
+            ('Screen Size to Small')
 
     def menu(self, args):
         """
         The menu function is the driver for the FrontEnd gui. It
         creates a cli interface for the user to interact with and 
         runs the event loop to track user inputs. 
-        The commands are
+        The commands are:
 
         p: play/pause
         c: change the song
@@ -100,6 +101,15 @@ class FrontEnd:
         self.stdscr.addstr(15,10, "Now playing: " + self.player.getCurrentSong())
 
     def changeSong(self):
+        """
+        Changes the song currently playing to a song of the users choice.
+        This is achieved in two ways. First is by typing the path of a 
+        song file (relative or absolute) or by typing in the name of a 
+        folder containing songs. If the latter method is used then a
+        prompt is displayed to ask which song from the list of files
+        the user wants played. This method catches an exception related
+        to the audio file if something goes wrong. 
+        """
         changeWindow = curses.newwin(5, 40, 5, 50)
         changeWindow.border()
         changeWindow.addstr(0,0, "What is the file path?", curses.A_REVERSE)
@@ -142,9 +152,12 @@ class FrontEnd:
         except CLI_Exception.CLI_Audio_File_Exception:
             self.printError('The file or folder does not exist')
                     
-
-
     def nextSong(self):
+        """
+        Cycles the player to the next song queued in the library.
+        This method handles a file exception when the library list
+        is empty.
+        """
         try:
             next = self.library.get_next_track()
             self.player.stop()
@@ -153,6 +166,16 @@ class FrontEnd:
             self.printError('The queue is empty')
 
     def queueSong(self):
+        """
+        This method allows the user to queue up a series of songs for 
+        later play. This is achieved in two ways. First by specify the 
+        path of an audio file or specifying the name of a directory
+        both means of adding to the queue will add to the queue. If 
+        the directory method is used then all the contents of the 
+        directory will be added to the queue. This method handles
+        file exceptions for when an invalid file or folder name is 
+        given by the user.
+        """
         queueWindow = curses.newwin(5, 40, 5, 50)
         queueWindow.border()
         queueWindow.addstr(0,0, "What is the file path?", curses.A_REVERSE)
@@ -170,6 +193,13 @@ class FrontEnd:
             self.printError('Error queueing file or folder')
 
     def listQueue(self):
+        """
+        Prints a list of queue songs to the user. This is done by 
+        asking for the whole queue of songs in the libray and printing 
+        them to the screen. If the queue is empty a message indicating 
+        such will be displayed. 
+        """
+
         queue = self.library.list_tracks()
         if len(queue) > 0:
             listWin = curses.newwin(len(queue), 40, 5, 50)
@@ -207,5 +237,8 @@ class FrontEnd:
         self.stdscr.refresh()
 
     def quit(self):
+        """
+        Exits the cli program and also stops the player. 
+        """
         self.player.stop()
         exit()
