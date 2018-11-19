@@ -11,6 +11,18 @@ class Player:
     handles the playing pausing and stopping of music. This is done by
     what appears to be steaming a file into an audio stream. It is done 
     in the background in a different thread.
+
+    Author Ira Woodring (King of the Seven Realms), 
+    David Baas(Court Jester) 
+    Version: 1.0 - 11/18/18
+
+    Attributes:
+    currentSong: the name of the current song playing.
+    paused: boolean to see if the song is paused or not
+    postion: the position the player is at in a given song. 
+    stream: the stream being used to play the song
+    wf: the wave file reader ?
+    p the instance of pyaudio
     """
     def __init__(self):
         """
@@ -33,6 +45,7 @@ class Player:
         Toggles weather the player is paused or not. If it is paused, 
         then the stream is stopped and the song is paused at its current
         position.
+        returns: nothing
         """
         if self.paused == False:
             self.paused = True
@@ -49,6 +62,9 @@ class Player:
         function that is called to update where the stream is in the file.
 
         param track: The audio file that will be played by this player.
+        returns: nothing.
+        throws: CLI_Audio_File_Exception for if there is someting wrong
+        with the file. 
         """
         try:
     
@@ -75,7 +91,7 @@ class Player:
     def stop(self):
         """
         Stops the entire stream that is playing an audio file. After this
-        member function is called, the audio file cannot be restarted
+        function is called, the audio file cannot be restarted
         """
         self.stream.stop_stream()
         self.stream.close()
@@ -87,6 +103,8 @@ class Player:
         """
         The callback function is used to read the data at the given part
         of the file stream.
+        #TODO Understand the input parameters better.
+        Returns: song data
         """
         data = self.wf.readframes(frame_count)
         return (data, pyaudio.paContinue)
