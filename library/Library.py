@@ -6,40 +6,35 @@ class Library:
     """
     The Library class holds a list of all the songs to be played 
     by the player. It does this by keeping track of the names of 
-    song files inside a list. There are three basic operations
-    1) Start a specific individual song or directory list of songs.
-    This is accomplished by inputting the name of the song file or the 
-    name of a directory contianing song files. In either case the
-    songs will be added to the queue list and will be played in the
-    order they are added. 
-    2) Add a queue of songs to be played later.
+    song files inside a list. The two operations are to add to the 
+    queue or to change track either from a specific file or from a folder
+    where the user will select which file to play from the list of items
+    in the directory.
 
-    All songs are stored in the queue list which determines which song
-    is played next.
+    Author: David Baas
+    Version 1.0 - 11/18/2018
+
+    Attributes: 
+    queue: The queue of songs that will be played. 
     """
-    #TODO Check that the file extension is correct
-    #TODO Do better comments
-
     def __init__(self):
         """
         Initializes the Library class making an empty queue.
-
-        param queue: The queue that will hold the playlist 
         """
         self.queue = deque()
 
     def changeTrack(self, pathname):
         """
         Looks that the path specified by the user and determines if it 
-        either a file or a folder. If the path is a file then it is 
+        either a file or a folder. If the path is a file, then it is 
         returned to the front end to allow it to be played. If the path
-        is a folder then the list of files inside are returned to the 
+        is a folder, then the list of files inside are returned to the 
         FrontEnd to allow the user to select the song from the list.
         If the path isn't valid then a file exception is thrown.
 
         param pathname: The path specified by the user.
         returns: The pathname if the path is a file or a list if the path
-        is a folder.
+        is a folder. In both cases a list is returned. 
         throws CLI_Audio_File_Exception if the path is invalid
         """
         if os.path.isfile(pathname):
@@ -56,19 +51,21 @@ class Library:
 
         param pathname: the pathname of the folder or song file being 
         added
-        returns: a string indicating the song or songs have been added
-        or not.
+        returns: nothing
+        throws: CLI_Audio_File_Exception if there was a problem with the
+        file or folder.
         """
         #check to see if it is a relative path from Home directory
         if pathname.startswith('~/'):
-            pathname.lstrip('~/')
+            pathname = pathname.lstrip('~/')
+            pathname = os.path.join('/Users')
         if os.path.isfile(pathname):
             self.queue.append(pathname)
-            return 'Song added'
+            return
         elif os.path.isdir(pathname):
             self.queue.extend(
                 [pathname + '/' + name for name in os.listdir(pathname)])
-            return 'Songs added'
+            return
         else:
             #throw an error
             raise CLI_Exception.CLI_Audio_File_Exception
@@ -80,6 +77,7 @@ class Library:
         If the queue is empty than an exception is thrown. 
 
         returns: the name of the next track
+        throws: CLI_Audio_File_Exception if the queue is empty
         """
         if len(self.queue ) > 0:
             return self.queue.popleft()
